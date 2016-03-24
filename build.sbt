@@ -16,6 +16,7 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % "1.5.1",
   "org.apache.spark" %% "spark-sql" % "1.5.1",
   "org.apache.spark" %% "spark-hive" % "1.5.1",
+  "com.databricks" %% "spark-csv" % "1.4.0",
   "me.simin" %% "spatial-spark" % "1.1.0-SNAPSHOT",
   "log4j" % "log4j" % "1.2.15" exclude("javax.jms", "jms") exclude("com.sun.jdmk", "jmxtools") exclude("com.sun.jmx", "jmxri"),
   "com.esri.geometry" % "esri-geometry-api" % "1.2.1"
