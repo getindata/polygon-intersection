@@ -12,7 +12,7 @@ object SelfIntersectionsCalculator {
     * Calculate pairs of Polygons which intersects with each other
     */
   def calculate(sc: SparkContext, polygons: RDD[Polygon]): RDD[(Polygon, Polygon)] = {
-    val geometryById = polygons.map(p => (p.id, p.geometry))
+    val geometryById = polygons.filter(!_.geometry.isEmpty).map(p => (p.id, p.geometry))
     geometryById.cache()
 
     val intersectedIds: RDD[(Long, Long)] = BroadcastSpatialJoin(sc, geometryById, geometryById, Intersects, 0.0)
