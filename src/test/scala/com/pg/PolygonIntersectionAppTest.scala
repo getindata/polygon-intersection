@@ -4,7 +4,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.hive.test.TestHiveContext
 import org.scalatest._
 
-class PolygonIntersectionAppTest extends FunSuite with BeforeAndAfterAll with BeforeAndAfter with Matchers {
+class PolygonIntersectionAppTest extends FunSuite with Matchers {
 
   val sc: SparkContext = SparkContextFactory.getSparkContext
   val sqlContext: TestHiveContext = SparkContextFactory.getSqlContext
@@ -14,10 +14,23 @@ class PolygonIntersectionAppTest extends FunSuite with BeforeAndAfterAll with Be
       "--polygons_csv", getClass.getResource("/data.csv").getPath,
       "--result_table", "results"))
 
-    PolygonIntersectionApp.runAnalyze(sc, sqlContext, options)
+    PolygonIntersectionApp.runCalculations(sc, sqlContext, options)
 
-    val results = sqlContext.sql(s"SELECT * from results").collect()
-    results.length shouldEqual 4
+    val results = sqlContext.sql(s"SELECT aId, bId, bFraction from results").collect()
+    val expectations = Map(
+      (0L, 0L) -> 1.0,
+      (0L, 1L) -> 1.0,
+      (1L, 1L) -> 1.0,
+      (1L, 0L) -> 0.25,
+      (2L, 2L) -> 1.0
+    )
+
+    results.length shouldEqual 5
+    for (r <- results) {
+      val idPair = (r.getLong(0), r.getLong(1))
+      val bFraction = r.getDouble(2)
+      expectations(idPair) shouldEqual bFraction +- 0.01
+    }
   }
 
 }

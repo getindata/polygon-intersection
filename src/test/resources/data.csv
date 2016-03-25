@@ -1,3 +1,4 @@
 WKT,nielsen_re,store_name
 "POLYGON ((-2 -2,-2 2, 2 2, 2 -2, -2 -2))",Sklep A,Sklep A
 "POLYGON ((0 0,0 2, 2 2, 2 0, 0 0))",Sklep B,Sklep B
+"POLYGON ((10 10,10 12, 12 12, 12 10, 10 10))",Sklep C,Sklep C

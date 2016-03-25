@@ -4,7 +4,7 @@ import model.Polygon
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import spatialspark.join.BroadcastSpatialJoin
-import spatialspark.operator.SpatialOperator
+import spatialspark.operator.SpatialOperator.Intersects
 
 object SelfIntersectionsCalculator {
 
@@ -14,8 +14,8 @@ object SelfIntersectionsCalculator {
   def calculate(sc: SparkContext, polygons: RDD[Polygon]): RDD[(Polygon, Polygon)] = {
     val geometryById = polygons.map(p => (p.id, p.geometry))
     geometryById.cache()
-    val intersectedIds: RDD[(Long, Long)] =
-      BroadcastSpatialJoin(sc, geometryById, geometryById, SpatialOperator.Intersects, 0.0)
+
+    val intersectedIds: RDD[(Long, Long)] = BroadcastSpatialJoin(sc, geometryById, geometryById, Intersects, 0.0)
 
     // join with source data
     val polgonsById = polygons.map(p => (p.id, p))
