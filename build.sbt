@@ -12,15 +12,20 @@ resolvers +=
   "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "2.2.1",
-  "org.apache.spark" %% "spark-core" % "1.5.1",
-  "org.apache.spark" %% "spark-sql" % "1.5.1",
-  "org.apache.spark" %% "spark-hive" % "1.5.1",
+  "org.apache.spark" %% "spark-core" % "1.5.1" % "provided",
+  "org.apache.spark" %% "spark-sql" % "1.5.1" % "provided",
+  "org.apache.spark" %% "spark-hive" % "1.5.1" % "provided",
   "com.databricks" %% "spark-csv" % "1.4.0",
   "me.simin" %% "spatial-spark" % "1.1.0-SNAPSHOT",
-  "log4j" % "log4j" % "1.2.15" exclude("javax.jms", "jms") exclude("com.sun.jdmk", "jmxtools") exclude("com.sun.jmx", "jmxri")
+  "org.slf4j" % "slf4j-log4j12" % "1.7.13" % "provided",
+  "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 )
 
-assemblyExcludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
-  cp filter { x => x.data.getName.matches("sbt.*") || x.data.getName.matches(".*macros.*") || x.data.getName.matches("spark.*") }
+assemblyMergeStrategy in assembly := {
+  case PathList("javax", "servlet", xs@_*) => MergeStrategy.first
+  case PathList("org", "apache", xs@_*) => MergeStrategy.first
+  case PathList("com", "esotericsoftware", xs@_*) => MergeStrategy.first
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
 }
