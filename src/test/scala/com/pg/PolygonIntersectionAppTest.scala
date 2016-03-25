@@ -1,6 +1,7 @@
 package com.pg
 
 import org.apache.spark.SparkContext
+import org.apache.spark.sql.Row
 import org.apache.spark.sql.hive.test.TestHiveContext
 import org.scalatest._
 
@@ -16,7 +17,7 @@ class PolygonIntersectionAppTest extends FunSuite with Matchers {
 
     PolygonIntersectionApp.runCalculations(sc, sqlContext, options)
 
-    val results = sqlContext.sql(s"SELECT aId, bId, bFraction from results").collect()
+    val results: Array[Row] = sqlContext.sql(s"SELECT aId, bId, bFraction from results").collect()
     val expectations = Map(
       (0L, 0L) -> 1.0,
       (0L, 1L) -> 1.0,
